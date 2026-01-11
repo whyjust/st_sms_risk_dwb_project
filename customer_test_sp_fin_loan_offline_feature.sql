@@ -1,5 +1,3 @@
-===== 生成的SQL =====
-
 CREATE TABLE sms_bd_data.customer_test_offline_express_feature_2026010901 AS
 WITH cus_sample AS (
     SELECT 
@@ -52,8 +50,7 @@ customer_dwb_sms AS (
         where cus_smp.back_date > dwb_loan.event_time and dwb_loan.event_time >= date_sub(cus_smp.back_date, 360)
     )cus_dwb
     group by mobile_md5, back_date, sign, event_type, event_time, ind_tag
-)
-,aggregated_data AS (
+),aggregated_data AS (
     SELECT
         mobile_md5,
         back_date,
