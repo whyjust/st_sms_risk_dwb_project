@@ -25,7 +25,7 @@ WITH cus_sample AS (
             dwb_express.event_type,
             dwb_express.event_time
         from cus_sample cus_smp
-        left join(
+        inner join(
             select
                 phone,
                 sign,
