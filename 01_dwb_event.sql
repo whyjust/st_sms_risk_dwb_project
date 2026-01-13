@@ -74,6 +74,34 @@ partitioned by (
      the_date string comment 'YYYYMMDD 数据日期'
 )
 STORED AS ORC;
+
+create table sms_bd_data.sms_dwb_fin_loan_ind_event_fdt(
+     phone string  comment '手机号',
+     sign  string  comment '签名',
+     event_type string comment '事件类型',
+     ind_tag string comment '行业类型'
+)comment '金融事件dwb中间层表'
+partitioned by (
+     the_date string comment 'YYYYMMDD 数据日期'
+)
+STORED AS ORC;
+
+insert overwrite table sms_bd_data.sms_dwb_fin_loan_ind_event_fdt partition(the_date)
+select
+     phone,
+     sign,
+     event_type,
+     case when sign regexp "抖音月付|放心借|微众银行|花呗" then 'indA'
+          when sign regexp "美团月付|携程金融|360借|拍拍贷|分期乐|拍拍金融|360贷款|上海拍拍贷|美团金融服务" then 'indB'
+          when sign regexp "还呗|信用飞钱包|省呗|乐享借|融360|洋钱罐借款|众安金融|分期金融|信用飞|乐逸花|极融借款|好分期|信用卡贷|金瀛分期|小赢卡贷|宜享花|众安贷借钱|融逸花|卡贷金融|吉用花|时光分期|小花钱包|借钱呗|金豆花|信用飞金融|来分期|小花借款|好会借|乐贷分期|及贷|榕树贷款|融易分期|借小花|薇钱包|你我贷|玖富借条" then 'indC'
+          when sign regexp "金融调解|数科金融|满松科技|利信普惠|普信金融|卡卡金融|和信普惠|和信金融|利信金融|数信普惠|普惠快信|普惠信息|首山金融|普惠金融|数信普惠|玖富万卡|钱站|鹰潭市金融纠纷调解中心|国美易卡|普惠分期|上海金融|数科纠纷调解中心" or sign in ('玖富') then 'indD'
+          when sign regexp "消费分期|消费金融|招联金融|移动白条|捷信金融|马上金融|中原消费金融|马上消费|分期消费" then 'indE'
+          when sign regexp "银行|农信|农商" then 'indF'
+     else 'indG' end as ind_tag,
+     the_date
+from sms_bd_data.sms_dwb_fin_loan_event_fdt;
+
+
 -----------------------
 -- B01: 严重逾期
 -- B02：三方催收
