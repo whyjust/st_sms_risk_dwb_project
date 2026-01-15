@@ -162,29 +162,29 @@ select * from ods_sms_content_sample_5pct where submitdate>='2025-12-20' and sub
 and content not rlike '(消费|下单).*?元|申请办理贷款|开通成功|开通成功|成功发放|已获得.*?额度|借款成功|成功开通|申请办理贷款|已[结还]清|成功还款|还款成功|自动扣款|(还款|扣款|扣划)失败|已过还款日|已[逾超]期|已过还款日|已.*?逾期|未按时还款|严重逾期|催缴|追缴|拒绝|严重违约|恶意违约|债权方|逃废债|诉前调查组|逾期材料|冻结全款|未通过|未放款成功|放款失败|本期应还|还款提醒|及时还款|还款卡余额充足|今日需还款|最高.*?额度|免费额度|距离提现|领取[您你]的[0-9]+元|确认提款|提额福利|优惠利率|立即提现|额度.*?失效|立即提额|获取最新额度|限高令|欠款.*?处理|无法全额清偿|逾期已久|调解方案|欠款数次|严重失信|执行记录|法院诉讼|恢复征信|纳入失信黑名单|减免协商|法院|节约诉讼|申请未通过|未获得借款|放款失败|未放款成功'
 limit 500
 
+-----------------------
+-- 数据统计
+-----------------------
+-- 101308: 28.16%
+select count(1) from sms_bd_data.customer_test_fin_loan_feature_2026011302
 
-select
-     phone,
-     sign,
-     case when content regexp '(?:消费|下单).*?元|申请办理贷款|开通成功|成功发放|已获得.*?额度|借款成功' then 'B01'
-          when content regexp '申请未通过|未获得借款|放款失败|未放款成功' then 'B02'
-          when content regexp '已[结还]清|成功还款|还款成功|自动扣款' then 'B03'
-          when content regexp '本期应还|还款提醒|及时还款|还款卡余额充足|今日需还款|应还.*?元|即将到期|已出账' then 'B04'
-          when content regexp '(?:还款|扣款|扣划)失败|扣款.*?失败' then 'B05'
-          when content regexp '已[逾超过]期|未按时还款|已过还款日|已.*?逾期' then 'B06'
-          when content regexp '严重逾期|[催清追]缴|拒绝|严重违约|恶意违约|债权方|逃废债|诉前调查组|逾期材料|强制冻结全款|限高令|欠款.*?处理|无法全额清偿|逾期已久|调解方案|欠款数次|严重失信|执行记录|法院诉讼|恢复征信|纳入失信黑名单|减免协商|法院|诉讼|借款逾期|多次提醒' then 'B07'
-          when content regexp '最高.*?额度|免费额度|距离提现|领取[您你]的[0-9]+元|确认提款|提额福利|优惠利率|立即提现|额度.*?失效|立即提额|获取最新额度|放款特权' then 'B09'
-     else 'B10' end as event_type,
-     ingestion_time as the_date
-from(
-     select
-          phone,
-          sign,
-          content,
-          ingestion_time
-     from sms_bd_data.ods_yxx_spn_sms_detail_di
-     where submitdate>='2025-12-01' and submitdate<='2025-12-01' and sign in ('抖音月付','美团月付','放心借','美团支付','携程金融','还呗','信用飞钱包','省呗','360借条','翼支付','辽沈银行',
-    '拍拍贷','普惠金融','乐享借','融360','洋钱罐借款','众安金融','分期金融','信用飞','乐逸花','极融借款','微众银行','建设银行')
-)sms
+-- 299853: 83.33%
+select count(1) from sms_bd_data.customer_test_express_feature_2026011301
+
+-- 359752
+select count(1) from sms_bd_data.customer_test_sample_id
+
+-- 7180
+select count(1) from sms_bd_data.customer_test_fin_loan_feature_2026011302 
+where sp_fin_loan_event_b01_times_360d > 0
+-- 4578
+select count(1) from sms_bd_data.customer_test_fin_loan_feature_2026011302 
+where sp_fin_loan_event_b02_times_360d > 0
+-- 1411
+select count(1) from sms_bd_data.customer_test_fin_loan_feature_2026011302 
+where sp_fin_loan_event_b02_times_360d > 0
+-- 10139
+select count(1) from sms_bd_data.customer_test_fin_loan_feature_2026011302 
+where sp_fin_loan_event_b03_times_360d > 0 or sp_fin_loan_event_b02_times_360d > 0 or sp_fin_loan_event_b01_times_360d > 0
 
 
